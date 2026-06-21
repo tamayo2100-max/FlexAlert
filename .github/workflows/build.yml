@@ -1,7 +1,7 @@
 name: Build APK
 
 # Compila el APK en la nube (servidor Linux gratis de GitHub).
-# Se dispara en cada push a main/master, o a mano desde la pestana "Actions".
+# Metodo directo y mantenido (sin la accion Docker que estaba rota).
 on:
   push:
     branches: [ main, master ]
@@ -9,21 +9,46 @@ on:
 
 jobs:
   build-android:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Descargar el codigo
         uses: actions/checkout@v4
 
-      - name: Compilar con Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
-          command: buildozer android debug
-          buildozer_version: stable
+          python-version: "3.11"
+
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git zip unzip openjdk-17-jdk python3-pip autoconf libtool \
+            pkg-config zlib1g-dev libncurses-dev libncursesw5-dev \
+            cmake libffi-dev libssl-dev build-essential ccache libsqlite3-dev
+
+      - name: Instalar Buildozer y Cython
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade buildozer cython
+
+      - name: Cache de Buildozer (acelera builds futuros)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.buildozer
+            .buildozer
+          key: buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            buildozer-
+
+      - name: Compilar APK (debug)
+        run: buildozer android debug
 
       - name: Subir el APK como artifact
         uses: actions/upload-artifact@v4
         with:
           name: FlexAlert-APK
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
+          if-no-files-found: error
