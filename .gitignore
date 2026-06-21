@@ -1,0 +1,15 @@
+# Entorno virtual (NO subir: son cientos de MB y solo para tu PC)
+venv/
+
+# Base de datos local y exports (datos tuyos, no van al repo)
+*.db
+export/
+flex_notifications.log
+
+# Cache de Python
+__pycache__/
+*.pyc
+
+# Artefactos de compilacion de Buildozer (se generan en la nube)
+.buildozer/
+bin/

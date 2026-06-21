@@ -1,0 +1,29 @@
+name: Build APK
+
+# Compila el APK en la nube (servidor Linux gratis de GitHub).
+# Se dispara en cada push a main/master, o a mano desde la pestana "Actions".
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Compilar con Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+
+      - name: Subir el APK como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlexAlert-APK
+          path: ${{ steps.buildozer.outputs.filename }}
