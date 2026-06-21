@@ -38,6 +38,9 @@ android.permissions = INTERNET,VIBRATE,POST_NOTIFICATIONS,FOREGROUND_SERVICE
 android.api = 34
 android.minapi = 24
 android.archs = arm64-v8a, armeabi-v7a
+# NDK 25b: version estable y compatible con Kivy 2.3.0
+# (las NDK r27/r28 nuevas rompen la compilacion de Kivy)
+android.ndk = 25b
 
 # Acepta automaticamente las licencias del SDK
 android.accept_sdk_license = True

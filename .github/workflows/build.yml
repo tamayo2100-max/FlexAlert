@@ -28,10 +28,12 @@ jobs:
             pkg-config zlib1g-dev libncurses-dev libncursesw5-dev \
             cmake libffi-dev libssl-dev build-essential ccache libsqlite3-dev
 
-      - name: Instalar Buildozer y Cython
+      - name: Instalar Buildozer y Cython (versiones probadas y estables)
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade buildozer cython
+          pip install "cython==0.29.36"
+          pip install "python-for-android==2024.1.21"
+          pip install "buildozer==1.5.0"
 
       - name: Cache de Buildozer (acelera builds futuros)
         uses: actions/cache@v4
